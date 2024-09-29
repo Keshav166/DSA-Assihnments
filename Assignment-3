@@ -1,0 +1,148 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    string song;
+    Node *next;
+
+    Node() {
+        song = "";
+        next = NULL;
+    }
+
+    Node(string s) {
+        song = s;
+        next = NULL;
+    }
+};
+
+class PlayList {
+    Node *head;
+
+public:
+    PlayList() : head(NULL) {} // Initialize head to NULL
+
+    void AddSong(string s) {
+        Node *nn = new Node(s);
+        if (head == NULL) {
+            head = nn; // Set head to the new node if list is empty
+        } else {
+            nn->next = head; // Insert new node at the beginning
+            head = nn; // Update head to new node
+        }
+    }
+
+    void DeleteSong(int pos) {
+        if (head == NULL) { // List is empty
+            cout << "List is empty. No song to delete." << endl;
+            return;
+        }
+
+        Node* temp = head;
+
+        if (pos == 1) { // Deleting the head node
+            head = temp->next; // Move head to the next node
+            delete temp; // Free memory
+            cout << "Deleted song at position " << pos << endl;
+            return;
+        }
+
+        // Traverse to the node just before the desired position
+        int currpos = 1;
+        while (temp != NULL && currpos < pos - 1) {
+            temp = temp->next;
+            currpos++;
+        }
+
+        // If the position is beyond the length of the list
+        if (temp == NULL || temp->next == NULL) {
+            cout << "Position does not exist." << endl;
+            return;
+        }
+
+        // Node to be deleted
+        Node* toDelete = temp->next;
+        temp->next = toDelete->next; // Unlink the node from the list
+        delete toDelete; // Free memory
+        cout << "Deleted song at position " << pos << endl;
+    }
+
+    void DisplayPlayList() {
+        Node *temp = head;
+        if (temp == NULL) {
+            cout << "Playlist is empty." << endl;
+            return;
+        }
+        while (temp != NULL) {
+            cout << temp->song << " -> ";
+            temp = temp->next;
+        }
+        cout << "NULL" << endl;
+    }
+
+    void DisplaySpecificSongs(int pos) {
+        Node *temp = head;
+        int currpos = 1;
+        while (temp != NULL && currpos < pos) {
+            temp = temp->next;
+            currpos++;
+        }
+
+        // Check if the position is valid
+        if (temp == NULL) {
+            cout << "Position does not exist." << endl;
+        } else {
+            cout << "Song at position " << pos << ": " << temp->song << endl;
+        }
+    }
+};
+
+int main() {
+    PlayList pl;
+    int ch;
+    char agree = 'Y';
+    do {
+        cout << "---MENU---";
+        cout << "\n1. Add songs";
+        cout << "\n2. Delete Songs";
+        cout << "\n3. Display the entire playlist";
+        cout << "\n4. Play specific songs";
+        cout << "\nChoose from the above: ";
+        cin >> ch;
+        cin.ignore(); // Clear the newline character from input buffer
+
+        switch (ch) {
+            case 1: {
+                string song_name;
+                cout << "\nEnter the song name: ";
+                getline(cin, song_name); // Use getline to allow multi-word names
+                pl.AddSong(song_name);
+                break;
+            }
+            case 2: {
+                int pos;
+                cout << "\nEnter the position where you want to delete: ";
+                cin >> pos;
+                pl.DeleteSong(pos);
+                break;
+            }
+            case 3:
+                pl.DisplayPlayList();
+                break;
+            case 4: {
+                int pos;
+                cout << "\nWhich song do you want to play? ";
+                cin >> pos;
+                pl.DisplaySpecificSongs(pos);
+                break;
+            }
+            default: 
+                cout << "\nInvalid choice!" << endl;
+        }
+        cout << "\nDo you want to continue? (Y/N): ";
+        cin >> agree;
+    } while (agree == 'y' || agree == 'Y');
+
+    return 0;
+}
