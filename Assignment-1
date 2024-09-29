@@ -1,0 +1,68 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Student {
+    string name[100];
+    int roll_no[100];
+    int n;
+    int sgpa[100];
+
+public:
+    void Getdata() {
+        cout << "\n-----ENTER THE DETAILS------";
+        cout << "\nFor how many students you wanna enter the data? ";
+        cin >> n;
+        for (int i = 0; i < n; i++) {
+            cout << "\nEnter the name of the student: ";
+            cin >> name[i];
+            cout << "\nEnter the roll number of the student: ";
+            cin >> roll_no[i];
+            cout << "\nEnter the sgpa of the student: ";
+            cin >> sgpa[i];
+        }
+    }
+
+    void Insertion_Sort() {
+        // Sorting based on roll_no
+        for (int i = 1; i < n; i++) {
+            int key = roll_no[i];
+            string key_name = name[i];
+            int key_sgpa = sgpa[i];
+            int j = i - 1;
+
+            // Move elements of roll_no, name, and sgpa that are greater than key
+            while (j >= 0 && roll_no[j] > key) {
+                roll_no[j + 1] = roll_no[j];
+                name[j + 1] = name[j];
+                sgpa[j + 1] = sgpa[j];
+                j--;
+            }
+            roll_no[j + 1] = key;
+            name[j + 1] = key_name;
+            sgpa[j + 1] = key_sgpa;
+        }
+        cout << "\nThe sorted roll list is: ";
+        for (int i = 0; i < n; i++) {
+            cout << roll_no[i] << "\t";
+        }
+        cout << endl;
+    }
+
+    void display_array() {
+        cout << "\n-----STUDENT DETAILS------";
+        for (int i = 0; i < n; i++) {
+            cout << "Name: " << name[i] << "\n";
+            cout << "Roll Number: " << roll_no[i] << "\n";
+            cout << "SGPA: " << sgpa[i] << "\n\n";
+        }
+    }
+};
+
+int main() {
+    Student stu;
+    stu.Getdata();
+    stu.Insertion_Sort();
+    stu.display_array();
+    return 0;
+}
