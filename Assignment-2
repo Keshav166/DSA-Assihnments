@@ -1,0 +1,74 @@
+/*Consider Employee database of PCCOE (at least 20 records). Database contains different fields of 
+every employee like EMP-ID, EMP-Name and EMP-Salary. 
+a. Arrange list of employees according to EMP-ID in ascending order using Quick Sort*/
+#include<iostream>
+using namespace std;
+
+// Creating a class 'Employee'.
+class Employee {
+    public:
+        int EMP_ID[20], EMP_SAL[20], n;
+        string EMP_NAME[20];
+
+        // Function to get employee data.
+        void Getdata() {
+            cout << "=================TAKING EMPLOYEE DATA=================";
+            cout << "\nEnter the number of records you want to enter: ";
+            cin >> n;
+            for(int i = 0; i < n; i++) {
+                cout << "\nEnter the employee ID: ";
+                cin >> EMP_ID[i];
+                cout << "Enter the employee name: ";
+                cin >> EMP_NAME[i];
+                cout << "Enter the salary of the employee: ";
+                cin >> EMP_SAL[i];
+            }
+        }
+
+        // Quick Sort function.
+        void QuickSort(int F, int L) {
+            if(F < L) {
+                int pivot = EMP_ID[F];
+                int i = F + 1;
+                int j = L;
+
+                while(i <= j) {
+                    while(i <= L && EMP_ID[i] <= pivot){
+                    	i++;
+					} 
+                    while(EMP_ID[j] > pivot){
+                    	j--;
+					}
+                    if(i < j) {
+                        swap(EMP_ID[i], EMP_ID[j]);
+                        swap(EMP_NAME[i], EMP_NAME[j]);
+                        swap(EMP_SAL[i], EMP_SAL[j]);
+                    }
+                }
+                swap(EMP_ID[F], EMP_ID[j]);
+                swap(EMP_NAME[F], EMP_NAME[j]);
+                swap(EMP_SAL[F], EMP_SAL[j]);
+
+                QuickSort(F, j - 1);
+                QuickSort(j + 1, L);
+            }
+        }
+
+        // Function to print employee data.
+        void PrintData() {
+            cout << "=================PRINTING EMPLOYEE DATA=================";
+            for(int i = 0; i < n; i++) {
+                cout << "\nEmployee ID: " << EMP_ID[i];
+                cout << " | Employee Name: " << EMP_NAME[i];
+                cout << " | Salary: "<< EMP_SAL[i] << endl;
+            }
+        }
+};
+
+int main() {
+    Employee emp; // Creation of Class Object.
+    emp.Getdata();
+    emp.QuickSort(0, emp.n - 1); // Correctly initializing F and L.
+    emp.PrintData();
+    return 0; // END OF PROGRAM.
+}
