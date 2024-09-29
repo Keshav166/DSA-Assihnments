@@ -1,0 +1,135 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+    public:
+        int coeff, pow;
+        Node *next;
+        Node(int c = 0, int p = 0) {
+            coeff = c;
+            pow = p;
+            next = NULL;
+        }
+};
+
+class LL {
+    Node *head;
+
+    public:
+        LL() { 
+            head = NULL; // Initialize head to NULL in constructor
+        }
+
+        // Create a node and append to the polynomial linked list
+        void Create_Node(int coeff, int pow) {
+            Node *nn = new Node(coeff, pow);
+            if (head == NULL) {
+                head = nn;
+            } else {
+                Node *temp = head;
+                while (temp->next != NULL) {
+                    temp = temp->next;
+                }
+                temp->next = nn;
+            }
+        }
+
+        // Print the polynomial
+        void printpoly() {
+            if (head != NULL) {
+                Node *temp = head;
+                while (temp != NULL) {
+                    cout << temp->coeff << "x^" << temp->pow;
+                    temp = temp->next;
+                    if (temp != NULL) {
+                        cout << " + ";
+                    }
+                }
+                cout << endl;
+            } else {
+                cout << "Polynomial is empty!" << endl;
+            }
+        }
+
+        // Add two polynomials and store the result in the current object
+        void polyadd(LL l1, LL l2) {
+            Node *p1 = l1.head;
+            Node *p2 = l2.head;
+            Node *result = NULL, *curr = NULL;
+
+            // Loop through both polynomials
+            while (p1 != NULL && p2 != NULL) {
+                Node *nn = new Node();
+                if (p1->pow > p2->pow) {
+                    nn->coeff = p1->coeff;
+                    nn->pow = p1->pow;
+                    p1 = p1->next;
+                } else if (p1->pow < p2->pow) {
+                    nn->coeff = p2->coeff;
+                    nn->pow = p2->pow;
+                    p2 = p2->next;
+                } else {
+                    nn->coeff = p1->coeff + p2->coeff;
+                    nn->pow = p1->pow;
+                    p1 = p1->next;
+                    p2 = p2->next;
+                }
+
+                if (result == NULL) {
+                    result = nn;
+                    curr = result;
+                } else {
+                    curr->next = nn;
+                    curr = curr->next;
+                }
+            }
+
+            // Add remaining terms of polynomial 1
+            while (p1 != NULL) {
+                Node *nn = new Node(p1->coeff, p1->pow);
+                curr->next = nn;
+                curr = curr->next;
+                p1 = p1->next;
+            }
+
+            // Add remaining terms of polynomial 2
+            while (p2 != NULL) {
+                Node *nn = new Node(p2->coeff, p2->pow);
+                curr->next = nn;
+                curr = curr->next;
+                p2 = p2->next;
+            }
+
+            head = result;  // Set the head of the result list
+        }
+};
+
+int main() {
+    LL ll1, ll2, ll3;
+
+    // Polynomial 1: 2x^5 + 4x^3 + 7x^1 + 4
+    ll1.Create_Node(2, 5);
+    ll1.Create_Node(4, 3);
+    ll1.Create_Node(7, 1);
+    ll1.Create_Node(4, 90);
+
+    // Polynomial 2: 5x^6 + 3x^4 + x^1
+    ll2.Create_Node(5, 6);
+    ll2.Create_Node(3, 4);
+    ll2.Create_Node(1, 90);
+    ll2.Create_Node(2,90);
+
+    cout << "First Polynomial: ";
+    ll1.printpoly();
+
+    cout << "Second Polynomial: ";
+    ll2.printpoly();
+
+    // Add the two polynomials and store the result in ll3
+    ll3.polyadd(ll1, ll2);
+
+    cout << "Resultant Polynomial after Addition: ";
+    ll3.printpoly();
+
+    return 0;
+}
