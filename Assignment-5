@@ -1,0 +1,148 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    string route;
+    Node *next;
+
+    Node() {  // Default constructor
+        route = "";
+        next = NULL;
+    }
+    
+    Node(string r) {  // Constructor with route data
+        route = r;
+        next = NULL;
+    }
+};
+
+class CircularRouteList {
+    Node *head;
+
+public:
+    CircularRouteList() {
+        head = NULL;  // Initialize head to nullptr
+    }
+
+    // Function to add a new route
+    void AddRoute(string r) {
+        Node *nn = new Node(r);
+        if (head == NULL) {
+            head = nn;
+            nn->next = head;  // Point to itself (circular)
+        } else {
+            nn->next = head;
+            Node *temp = head;
+            while (temp->next != head) {
+                temp = temp->next;  // Traverse to last node
+            }
+            temp->next = nn;  // Link new node
+        }
+    }
+
+    // Function to remove a route at a given position
+    void RemoveRoute(int pos) {
+        if (head == NULL) {
+            cout << "No routes to remove." << endl;
+            return;
+        }
+
+        Node *temp = head;
+
+        // Deleting the first route (head)
+        if (pos == 1) {
+            if (head->next == head) {  // Only one node in the list
+                delete head;
+                head = NULL;
+            } else {
+                // Find the last node
+                while (temp->next != head) {
+                    temp = temp->next;
+                }
+                // Update links
+                temp->next = head->next;  // Bypass the head node
+                delete head;  // Delete the old head
+                head = temp->next;  // Update head to next node
+            }
+            return;
+        }
+
+        // Deleting a node at a given position
+        int currpos = 1;
+        while (currpos < pos - 1 && temp->next != head) {
+            temp = temp->next;
+            currpos++;
+        }
+
+        // Check if the position is valid
+        if (currpos == pos - 1 && temp->next != head) {
+            Node *toDelete = temp->next;  // Node to be deleted
+            temp->next = toDelete->next;  // Bypass the node
+            delete toDelete;  // Delete the node
+        } else {
+            cout << "Position out of bounds." << endl;
+        }
+    }
+
+    // Function to display all the routes
+    void DisplayRoutes() {
+        if (head == NULL) {
+            cout << "\nNo routes available.";
+            return;
+        }
+        
+        Node *temp = head;
+        cout << "Routes: ";
+        do {
+            cout << temp->route << " -> ";
+            temp = temp->next;  // Move to next node
+        } while (temp != head);  // Stop when back to head
+        cout << "(back to start)" << endl;
+    }
+};
+
+// Menu-driven program to simulate the delivery service navigation system
+int main() {
+    CircularRouteList routeList;
+    int choice;
+    string routeName;
+    int pos;
+
+    do {
+        cout << "\n--- Delivery Service Navigation System ---";
+        cout << "\n1. Add route";
+        cout << "\n2. Remove route";
+        cout << "\n3. Display routes";
+        cout << "\n4. Exit";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter the route name to add: ";
+                cin >> routeName;
+                routeList.AddRoute(routeName);
+                break;
+
+            case 2:
+                cout << "Enter the position of the route to remove: ";
+                cin >> pos;
+                routeList.RemoveRoute(pos);
+                break;
+
+            case 3:
+                routeList.DisplayRoutes();
+                break;
+
+            case 4:
+                cout << "Exiting navigation system..." << endl;
+                break;
+
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+        }
+    } while (choice != 4);
+
+    return 0;
+}
