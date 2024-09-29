@@ -1,0 +1,101 @@
+#include<iostream>
+using namespace std;
+
+class Student {
+    public:
+        int roll_no, marks;
+        string name;
+
+        // Function to take student data input
+        void getdata(Student s[], int n) {
+            for(int i = 0; i < n; i++) {
+                cout << "\nEnter the name of the student: ";
+                cin >> s[i].name;
+                cout << "\nEnter the roll number of the student: ";
+                cin >> s[i].roll_no;
+                cout << "\nEnter the marks of the student: ";
+                cin >> s[i].marks;
+            }
+        }
+
+        // Function to print student data
+        void printdata() {
+            cout << "\nThe name of the student is: " << name;
+            cout << "\nThe roll number of the student is: " << roll_no;
+            cout << "\nThe marks of the student are: " << marks;
+        }
+};
+
+// Shell Sort function for sorting students by name
+void Shell_Sort(int n, Student s[]) {
+    for(int gap = n / 2; gap > 0; gap /= 2) {
+        for(int j = gap; j < n; j++) {
+            Student temp = s[j];
+            int i = j;
+            while(i >= gap && s[i - gap].name > temp.name) {
+                s[i] = s[i - gap];
+                i -= gap;
+            }
+            s[i] = temp;
+        }
+    }
+}
+
+int main() {
+    const int MAX_STUDENTS = 15; // maximum number of students
+    Student stu[MAX_STUDENTS]; // array to hold student data
+    Student x; // temporary Student object for input
+    int n = 0; // variable to hold the number of students
+    int ch; // variable for user choice
+
+    do {
+        cout << "\n1. Enter the student data:";
+        cout << "\n2. Sort the student data by name:";
+        cout << "\n3. Display the student data:";
+        cout << "\n4. Exit";
+        cout << "\nChoose an option: ";
+        cin >> ch;
+
+        switch(ch){
+            case 1:
+                cout << "\nHow many students do you want to enter (Max " << MAX_STUDENTS << ")? ";
+                cin >> n;
+                if(n > MAX_STUDENTS) {
+                    cout << "\nYou can only enter up to " << MAX_STUDENTS << " students.";
+                    n = MAX_STUDENTS;
+                }
+                x.getdata(stu, n); // getting student data
+                break;
+
+            case 2:
+                if(n == 0) {
+                    cout << "\nNo student data to sort. Please enter data first.";
+                } else {
+                    Shell_Sort(n, stu); // sorting student data by name
+                    cout << "\nData sorted by name.";
+                }
+                break;
+
+            case 3:
+                if(n == 0) {
+                    cout << "\nNo student data available. Please enter data first.";
+                } else {
+                    cout << "\nDisplaying student data:";
+                    for(int i = 0; i < n; i++) {
+                        stu[i].printdata(); // printing student data
+                    }
+                }
+                break;
+
+            case 4:
+                cout << "\nExiting the program...";
+                break;
+
+            default:
+                cout << "\nInvalid Choice. Please try again.";
+        }
+
+    } while(ch != 4);
+
+    return 0;
+}
