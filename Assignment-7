@@ -1,0 +1,112 @@
+#include<iostream>
+using namespace std;
+
+class ManageHistory {
+    int top = -1; // Top for the first stack
+    int top2 = -1; // Top for the second stack
+    string page_stk[100], page_stk2[100]; // Stack for visited pages and navigation history
+
+public:
+    void Add_visited_page(string s);
+    void Navigate_back();
+    void Display();
+    void ViewCurrentPage();
+    void CheckEmpty();
+};
+
+// Add visited page to the history
+void ManageHistory::Add_visited_page(string s) {
+    top++; // Increment top
+    page_stk[top] = s; // Push the page name into the stack
+}
+
+// Navigate back to the previous page
+void ManageHistory::Navigate_back() {
+    if (top == -1) { // Check if history is empty
+        cout << "No pages in history to navigate back." << endl;
+        return;
+    }
+    
+    top2++; // Increment top of the second stack
+    page_stk2[top2] = page_stk[top]; // Push the top element from the first stack to the second
+    cout << "Navigated back to: " << page_stk[top] << endl; // Show the navigated page
+    top--; // Decrement the top of the first stack
+}
+
+// Display the current page
+void ManageHistory::ViewCurrentPage() {
+    if (top2 == -1) { // Check if current page exists
+        cout << "No current page to display." << endl;
+    } else {
+        cout << "The current page is: " << page_stk2[top2] << endl; // Display the last navigated page
+    }
+}
+
+// Check if the history stack is empty
+void ManageHistory::CheckEmpty() {
+    if (top == -1) {
+        cout << "History is empty..." << endl;
+    } else {
+        cout << "History is not empty..." << endl;
+    }
+}
+
+// Display all visited pages
+void ManageHistory::Display() {
+    cout << "Visited pages: ";
+    for (int i = 0; i <= top; i++) {
+        cout << page_stk[i] << " "; // Print each visited page
+    }
+    cout << endl; // Newline for formatting
+}
+
+int main() {
+    ManageHistory mh;
+    int ch;
+    string visited;
+    char agree = 'Y';
+
+    do {
+        cout << "\nHISTORY MANAGEMENT SYSTEM";
+        cout << "\n----------MENU----------";
+        cout << "\n1. Add visited page.";
+        cout << "\n2. Navigate back.";
+        cout << "\n3. View current page.";
+        cout << "\n4. Check if history is empty or not.";
+        cout << "\n5. Display all visited pages."; // Added option to display all pages
+        cout << "\nChoose from the above: ";
+        cin >> ch;
+
+        switch (ch) {
+            case 1:
+                cout << "\nEnter the page visited: ";
+                cin >> visited;
+                mh.Add_visited_page(visited);
+                break;
+
+            case 2:
+                mh.Navigate_back();
+                break;
+
+            case 3:
+                mh.ViewCurrentPage();
+                break;
+
+            case 4:
+                mh.CheckEmpty();
+                break;
+
+            case 5:
+                mh.Display(); // Call to display visited pages
+                break;
+
+            default:
+                cout << "\nInvalid choice...try again!" << endl;
+        }
+        cout << "\nDo you want to continue? (Y/N): ";
+        cin >> agree;
+    } while (agree == 'Y' || agree == 'y');
+
+    // THE END...
+    return 0;
+}
