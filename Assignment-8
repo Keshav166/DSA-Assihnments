@@ -1,0 +1,133 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    string infix, postfix, prefix;
+    char c;
+
+    // Input infix expression
+    cout << "Enter infix expression: ";
+    cin >> infix;
+
+    // Conversion from infix to postfix
+    char stack[100];
+    int top = -1;
+
+    for (int i = 0; i < infix.length(); i++) {
+        c = infix[i];
+
+        if (isalnum(c)) {
+            postfix += c; // If operand, add it to output
+        } else if (c == '(') {
+            stack[++top] = c;
+        } else if (c == ')') {
+            while (top != -1 && stack[top] != '(') {
+                postfix += stack[top--];
+            }
+            top--; // Remove '('
+        } else { // Operator
+            while (top != -1 && (stack[top] == '*' || stack[top] == '/' ||
+                   (stack[top] == '+' || stack[top] == '-') && (c == '+' || c == '-'))) {
+                postfix += stack[top--];
+            }
+            stack[++top] = c;
+        }
+    }
+    while (top != -1) {
+        postfix += stack[top--];
+    }
+
+    cout << "Postfix: " << postfix << endl;
+
+    // Conversion from infix to prefix
+    for (int i = infix.length() - 1; i >= 0; i--) {
+        c = infix[i];
+        if (c == '(') {
+            infix[i] = ')';
+        } else if (c == ')') {
+            infix[i] = '(';
+        }
+    }
+
+    // Reset stack for prefix conversion
+    top = -1;
+
+    for (int i = 0; i < infix.length(); i++) {
+        c = infix[i];
+
+        if (isalnum(c)) {
+            prefix += c; // If operand, add it to output
+        } else if (c == '(') {
+            stack[++top] = c;
+        } else if (c == ')') {
+            while (top != -1 && stack[top] != '(') {
+                prefix += stack[top--];
+            }
+            top--; // Remove '('
+        } else { // Operator
+            while (top != -1 && (stack[top] == '*' || stack[top] == '/' ||
+                   (stack[top] == '+' || stack[top] == '-') && (c == '+' || c == '-'))) {
+                prefix += stack[top--];
+            }
+            stack[++top] = c;
+        }
+    }
+    while (top != -1) {
+        prefix += stack[top--];
+    }
+
+    // Reverse the prefix expression
+    string reversedPrefix;
+    for (int i = prefix.length() - 1; i >= 0; i--) {
+        reversedPrefix += prefix[i];
+    }
+    prefix = reversedPrefix;
+
+    cout << "Prefix: " << prefix << endl;
+
+    // Evaluation of postfix expression
+    cout << "Enter postfix expression for evaluation: ";
+    cin >> postfix;
+
+    int values[100], valTop = -1;
+
+    for (char c : postfix) {
+        if (isdigit(c)) {
+            values[++valTop] = c - '0'; // Convert char to int
+        } else {
+            int b = values[valTop--];
+            int a = values[valTop--];
+            switch (c) {
+                case '+': values[++valTop] = a + b; break;
+                case '-': values[++valTop] = a - b; break;
+                case '*': values[++valTop] = a * b; break;
+                case '/': values[++valTop] = a / b; break;
+            }
+        }
+    }
+    cout << "Postfix Evaluation Result: " << values[valTop] << endl;
+
+    // Evaluation of prefix expression
+    cout << "Enter prefix expression for evaluation: ";
+    cin >> prefix;
+
+    for (int i = prefix.length() - 1; i >= 0; i--) {
+        c = prefix[i];
+
+        if (isdigit(c)) {
+            values[++valTop] = c - '0'; // Convert char to int
+        } else {
+            int a = values[valTop--];
+            int b = values[valTop--];
+            switch (c) {
+                case '+': values[++valTop] = a + b; break;
+                case '-': values[++valTop] = a - b; break;
+                case '*': values[++valTop] = a * b; break;
+                case '/': values[++valTop] = a / b; break;
+            }
+        }
+    }
+    cout << "Prefix Evaluation Result: " << values[valTop] << endl;
+
+    return 0;
+}
