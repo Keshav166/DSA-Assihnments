@@ -1,0 +1,82 @@
+#include <iostream>
+using namespace std;
+
+class Waitlist {
+    int size = 5;
+    string waitlist[5];
+    int rear = -1, front = -1;
+
+public:
+    void AddParty(string party) {
+        if (rear == size - 1) {
+            cout << "Waitlist is full. Cannot add party: " << party << endl;
+        } else {
+            if (front == -1) {
+                front = 0; // Initialize front when the first party is added
+            }
+            waitlist[++rear] = party;
+            cout << "Party '" << party << "' added to waitlist." << endl;
+        }
+    }
+
+    string SeatParty() {
+        if (front == -1 || front > rear) {
+            return "No party to seat.";
+        } else {
+            string val = waitlist[front];
+            front++; // Move front to the next party
+            if (front > rear) { // Reset front and rear if the waitlist becomes empty
+                front = rear = -1;
+            }
+            return val; // Return the name of the seated party
+        }
+    }
+
+    void DisplayWaitList() {
+        if (rear == -1 && front == -1) {
+            cout << "Queue is empty." << endl;
+        } else {
+            cout << "Current waitlist:" << endl;
+            for (int i = front; i <= rear; i++) {
+                cout << waitlist[i] << endl;
+            }
+        }
+    }
+};
+
+int main() {
+    Waitlist w; // Create a Waitlist object
+    string party;
+    int ch;
+    char agree = 'Y';
+
+    do {
+        cout << "\n---------------MENU-----------------";
+        cout << "\n1. ADD PARTY";
+        cout << "\n2. SEAT PARTY";
+        cout << "\n3. DISPLAY WAITLIST";
+        cout << "\nChoose from the following: ";
+        cin >> ch;
+
+        switch (ch) {
+            case 1:
+                cout << "\nEnter the party name: ";
+                cin >> party;
+                w.AddParty(party);
+                break;
+            case 2:
+                cout << "\nThe party seated is: " << w.SeatParty() << endl;
+                break;
+            case 3:
+                w.DisplayWaitList();
+                break;
+            default:
+                cout << "\nInvalid Choice" << endl;
+        }
+
+        cout << "\nDo you want to continue? (Y or y / N or n): ";
+        cin >> agree;
+    } while (agree == 'y' || agree == 'Y');
+
+    return 0;
+}
