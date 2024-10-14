@@ -1,0 +1,117 @@
+//Assignment-9b
+#include <iostream>
+using namespace std;
+class Node{
+    public:
+      int data;
+      Node *next;
+      Node(){
+          data = 0;
+          next = NULL;
+      }
+      Node(int d){
+          data = d;
+          next = NULL;
+      }
+};
+class CheckOutSystem{
+  Node *head;
+  Node *tail;
+  public:
+    CheckOutSystem(){
+        head = NULL;
+        tail = NULL;
+    }
+    void Customer_Arrival(int d){
+        Node *nn = new Node(d);
+        if(head == NULL){
+            head = nn;
+            tail = nn;
+            nn->next = head;
+        }
+        else{
+            tail->next = nn;
+            tail = nn;
+            tail->next = head;
+        }
+        cout << "Customer " << d << " has arrived";
+    }
+    void Customer_Checkout(){
+        if (head == NULL) {
+            cout << "No customers in the queue!\n";
+            return;
+        }
+        Node *temp = head;
+        if (head == tail) { 
+            delete head;
+            head = NULL;
+            tail = NULL;
+        } 
+        else {
+            head = head->next;
+            tail->next = head;
+            delete temp;
+        }
+        cout << "Customer checked out!\n";
+    }
+    void CloseCheckOutCounter(){
+        if(head == NULL){
+            cout << "Counter is empty";
+        }
+        else{
+            cout << "\nCounter is full";
+        }
+    }
+    void ViewCustomer(){
+        if (head == NULL) {
+            cout << "Counter is empty\n";
+            return;
+        }
+        Node *temp = head;
+        do {
+            cout << temp->data << " ";
+            temp = temp->next;
+        } while (temp != head);
+        cout << endl;
+    }
+};
+int main() {
+    CheckOutSystem c;
+    int cust;
+    int ch;
+    char agree = 'Y';
+    do {
+        cout << "\n--------------MENU----------------";
+        cout << "\n1. Customer Arrival";
+        cout << "\n2. Customer Checkout";
+        cout << "\n3. Close Checkout Counter";
+        cout << "\n4. View Customer";
+        cout << "\nChoose from the following: ";
+        cin >> ch;
+
+        switch (ch) {
+        case 1:
+            cout << "\nEnter the customer number: ";
+            cin >> cust;
+            c.Customer_Arrival(cust);
+            break;
+        case 2:
+            c.Customer_Checkout();
+            break;
+        case 3:
+            c.CloseCheckOutCounter();
+            break;
+        case 4:
+            cout << "\nCustomers in the queue are: ";
+            c.ViewCustomer();
+            break;
+        default:
+            cout << "\nINVALID CHOICE";
+        }
+
+        cout << "\nDo you want to continue? (Y/N): ";
+        cin >> agree;
+    } while (agree == 'Y' || agree == 'y');
+
+    return 0;
+}
