@@ -1,0 +1,121 @@
+#include <iostream>
+
+using namespace std;
+
+class Job {
+public:
+    int job_id;
+    int job_priority;
+    int machine_id;
+
+    Job(int id, int priority, int machine) : job_id(id), job_priority(priority), machine_id(machine) {}
+
+    void display() {
+        cout << "Job(ID=" << job_id << ", Priority=" << job_priority << ", Machine=" << machine_id << ")" << endl;
+    }
+};
+
+class JobScheduler {
+private:
+    Job* jobs[100]; // Array to store jobs
+    int size;
+
+public:
+    JobScheduler() : size(0) {}
+
+    // Add a job
+    void add_job(int id, int priority, int machine) {
+        if (size >= 100) {
+            cout << "Job queue is full!" << endl;
+            return;
+        }
+        jobs[size++] = new Job(id, priority, machine);
+        cout << "Added Job(ID=" << id << ")" << endl;
+    }
+
+    // Remove a job
+    void remove_job() {
+        if (size == 0) {
+            cout << "No jobs to remove." << endl;
+            return;
+        }
+        cout << "Removed Job(ID=" << jobs[size - 1]->job_id << ")" << endl;
+        delete jobs[--size]; // Deallocate memory
+    }
+
+    // Display all jobs
+    void display_jobs() {
+        if (size == 0) {
+            cout << "No jobs in the queue." << endl;
+            return;
+        }
+        cout << "Jobs in the queue:" << endl;
+        for (int i = 0; i < size; i++) {
+            jobs[i]->display();
+        }
+    }
+
+    // Search for a job by ID
+    void search_job(int job_id) {
+        for (int i = 0; i < size; i++) {
+            if (jobs[i]->job_id == job_id) {
+                cout << "Found Job: ";
+                jobs[i]->display();
+                return;
+            }
+        }
+        cout << "No job found with ID: " << job_id << endl;
+    }
+
+    // Cleanup function to deallocate memory
+    void cleanup() {
+        for (int i = 0; i < size; i++) {
+            delete jobs[i];
+        }
+    }
+};
+
+// Function to display menu
+void display_menu() {
+    cout << "\nJob Scheduler Menu:" << endl;
+    cout << "1. Add Job" << endl;
+    cout << "2. Remove Job" << endl;
+    cout << "3. Display Jobs" << endl;
+    cout << "4. Search Job" << endl;
+    cout << "5. Exit" << endl;
+    cout << "Select an option: ";
+}
+
+int main() {
+    JobScheduler scheduler;
+    int choice, id, priority, machine;
+
+    while (true) {
+        display_menu();
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter Job ID, Priority, and Machine ID: ";
+                cin >> id >> priority >> machine;
+                scheduler.add_job(id, priority, machine);
+                break;
+            case 2:
+                scheduler.remove_job();
+                break;
+            case 3:
+                scheduler.display_jobs();
+                break;
+            case 4:
+                cout << "Enter Job ID to search: ";
+                cin >> id;
+                scheduler.search_job(id);
+                break;
+            case 5:
+                scheduler.cleanup(); // Cleanup before exit
+                return 0;
+            default:
+                cout << "Invalid option! Please try again." << endl;
+        }
+    }
+}
