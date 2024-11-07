@@ -1,0 +1,113 @@
+#include <iostream>
+using namespace std;
+
+class JobScheduling {
+    int size = 5;
+    int jobIDs[5];  // Array to store job IDs
+    int priorities[5];  // Array to store job priorities
+    int front = -1;
+    int rear = -1;
+
+public:
+    // Check if the queue is empty
+    bool IsEmpty() {
+        return (front == -1);
+    }
+
+    // Check if the queue is full
+    bool IsFull() {
+        return (rear == size - 1);
+    }
+
+    // Enqueue a job with its priority
+    void EnQueue(int jobID, int priority) {
+        if (IsFull()) {
+            cout << "\nQueue is full. Cannot add more jobs.\n";
+            return;
+        }
+
+        // If queue is empty, initialize front
+        if (front == -1) {
+            front = 0;
+        }
+
+        rear++;
+        jobIDs[rear] = jobID;
+        priorities[rear] = priority;
+
+        // Sorting the jobs by priority (lower priority number means higher priority)
+        for (int i = 0; i <= rear; i++) {
+            for (int j = i + 1; j <= rear; j++) {
+                if (priorities[i] > priorities[j]) {
+                    // Swap priorities
+                    int tempPri = priorities[i];
+                    priorities[i] = priorities[j];
+                    priorities[j] = tempPri;
+
+                    // Swap job IDs accordingly
+                    int tempJob = jobIDs[i];
+                    jobIDs[i] = jobIDs[j];
+                    jobIDs[j] = tempJob;
+                }
+            }
+        }
+    }
+
+    // Dequeue a job (this will always remove the job with the highest priority)
+    void DeQueue() {
+        if (IsEmpty()) {
+            cout << "\nQueue is empty. No jobs to process.\n";
+            return;
+        }
+
+        // The job with the highest priority (lowest priority value) is at the front
+        cout << "Processing Job ID: " << jobIDs[front] << " with priority: " << priorities[front] << endl;
+
+        // After processing, remove the job from the queue by shifting elements
+        for (int i = front; i < rear; i++) {
+            jobIDs[i] = jobIDs[i + 1];
+            priorities[i] = priorities[i + 1];
+        }
+        rear--;
+
+        // If the queue becomes empty, reset front and rear
+        if (rear == -1) {
+            front = -1;
+        }
+    }
+
+    // Display all jobs in the queue
+    void Display() {
+        if (IsEmpty()) {
+            cout << "\nNo jobs in the queue.\n";
+            return;
+        }
+        cout << "\nJobs in the queue (JobID Priority):\n";
+        for (int i = front; i <= rear; i++) {
+            cout << "Job ID: " << jobIDs[i] << " Priority: " << priorities[i] << endl;
+        }
+    }
+};
+
+int main() {
+    JobScheduling js;
+
+    // Adding jobs with job ID and priority (lower priority number is higher priority)
+    js.EnQueue(1, 3);  // Job ID 1 with priority 3
+    js.EnQueue(3, 2);  // Job ID 3 with priority 2
+    js.EnQueue(8, 1);  // Job ID 8 with priority 1
+    js.EnQueue(9, 4);  // Job ID 9 with priority 4
+    js.EnQueue(2, 1);  // Job ID 2 with priority 1
+
+    // Display the jobs in the queue
+    js.Display();
+
+    // Process jobs one by one (based on priority)
+    js.DeQueue();
+    js.DeQueue();
+
+    // Display remaining jobs in the queue
+    js.Display();
+
+    return 0;
+}
