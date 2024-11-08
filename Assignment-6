@@ -111,13 +111,12 @@ int main() {
     ll1.Create_Node(2, 5);
     ll1.Create_Node(4, 3);
     ll1.Create_Node(7, 1);
-    ll1.Create_Node(4, 90);
+    ll1.Create_Node(4, 0);  // Constant term
 
     // Polynomial 2: 5x^6 + 3x^4 + x^1
     ll2.Create_Node(5, 6);
     ll2.Create_Node(3, 4);
-    ll2.Create_Node(1, 90);
-    ll2.Create_Node(2,90);
+    ll2.Create_Node(1, 1);  // Term with power 1
 
     cout << "First Polynomial: ";
     ll1.printpoly();
