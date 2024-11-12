@@ -1,61 +1,80 @@
 #include <iostream>
-
 using namespace std;
 
 class Job {
 public:
     int job_id;
     int job_priority;
-    int machine_id;
 
-    Job(int id, int priority, int machine) : job_id(id), job_priority(priority), machine_id(machine) {}
+    Job(int id, int priority) : job_id(id), job_priority(priority) {}
 
-    void display() {
-        cout << "Job(ID=" << job_id << ", Priority=" << job_priority << ", Machine=" << machine_id << ")" << endl;
+    void display() const {
+        cout << "Job(ID=" << job_id << ", Priority=" << job_priority << ")" << endl;
     }
 };
 
 class JobScheduler {
 private:
-    Job* jobs[100]; // Array to store jobs
+    Job* jobs[100]; // Array to simulate deque (FIFO)
+    Job* priority_queue_jobs[100]; // Array to simulate priority queue
     int size;
+    int priority_size;
 
 public:
-    JobScheduler() : size(0) {}
+    JobScheduler() : size(0), priority_size(0) {}
 
-    // Add a job
-    void add_job(int id, int priority, int machine) {
+    // Add a job to the deque (FIFO) and the priority queue (based on priority)
+    void add_job(int id, int priority) {
         if (size >= 100) {
             cout << "Job queue is full!" << endl;
             return;
         }
-        jobs[size++] = new Job(id, priority, machine);
-        cout << "Added Job(ID=" << id << ")" << endl;
+        Job* new_job = new Job(id, priority);
+
+        // Add to deque (FIFO)
+        jobs[size++] = new_job;
+
+        // Insert into priority queue (keeping highest priority at the front)
+        int i = priority_size;
+        while (i > 0 && priority_queue_jobs[i - 1]->job_priority < priority) {
+            priority_queue_jobs[i] = priority_queue_jobs[i - 1];
+            i--;
+        }
+        priority_queue_jobs[i] = new_job;
+        priority_size++;
+
+        cout << "Added Job(ID=" << id << ", Priority=" << priority << ")" << endl;
     }
 
-    // Remove a job
+    // Remove a job from the deque (FIFO)
     void remove_job() {
         if (size == 0) {
             cout << "No jobs to remove." << endl;
             return;
         }
-        cout << "Removed Job(ID=" << jobs[size - 1]->job_id << ")" << endl;
-        delete jobs[--size]; // Deallocate memory
+        cout << "Removed Job(ID=" << jobs[0]->job_id << ", Priority=" << jobs[0]->job_priority << ")" << endl;
+
+        // Remove from deque (FIFO)
+        delete jobs[0];
+        for (int i = 1; i < size; i++) {
+            jobs[i - 1] = jobs[i];
+        }
+        size--;
     }
 
-    // Display all jobs
+    // Display all jobs from the priority queue (highest priority first)
     void display_jobs() {
-        if (size == 0) {
+        if (priority_size == 0) {
             cout << "No jobs in the queue." << endl;
             return;
         }
-        cout << "Jobs in the queue:" << endl;
-        for (int i = 0; i < size; i++) {
-            jobs[i]->display();
+        cout << "Jobs in the priority queue (highest priority first):" << endl;
+        for (int i = 0; i < priority_size; i++) {
+            priority_queue_jobs[i]->display();
         }
     }
 
-    // Search for a job by ID
+    // Search for a job by ID in the deque
     void search_job(int job_id) {
         for (int i = 0; i < size; i++) {
             if (jobs[i]->job_id == job_id) {
@@ -88,17 +107,15 @@ void display_menu() {
 
 int main() {
     JobScheduler scheduler;
-    int choice, id, priority, machine;
-
+    int choice, id, priority;
     while (true) {
         display_menu();
         cin >> choice;
-
         switch (choice) {
             case 1:
-                cout << "Enter Job ID, Priority, and Machine ID: ";
-                cin >> id >> priority >> machine;
-                scheduler.add_job(id, priority, machine);
+                cout << "Enter Job ID, Priority: ";
+                cin >> id >> priority;
+                scheduler.add_job(id, priority);
                 break;
             case 2:
                 scheduler.remove_job();
