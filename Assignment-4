@@ -3,106 +3,106 @@ using namespace std;
 
 class Node {
 public:
-    char data; // Character data
-    Node* prev; // Pointer to the previous node
-    Node* next; // Pointer to the next node
+    char data;
+    Node* prev;
+    Node* next;
 
     Node(char c) {
-        data = c; // Initialize data
-        prev = NULL; // Initialize prev pointer
-        next = NULL; // Initialize next pointer
+        data = c;
+        prev = NULL;
+        next = NULL;
     }
 };
 
 class TextEditor {
 private:
-    Node* head; // Pointer to the head of the list
-    Node* tail; // Pointer to the tail of the list
+    Node* head;
+    Node* tail;
 
 public:
     TextEditor() {
-        head = NULL; // Initialize head
-        tail = NULL; // Initialize tail
+        head = NULL;
+        tail = NULL;
     }
 
     // Insert text character by character
     void InsertText(const char* text) {
-        while (*text != '\0') { // Loop through each character until null terminator
-            Node* newNode = new Node(*text); // Create a new node with the character
-            if (head == NULL) { // If the list is empty
-                head = newNode; // Set head to new node
-                tail = newNode; // Set tail to new node
+        while (*text != '\0') {
+            Node* newNode = new Node(*text);
+            if (head == NULL) {
+                head = newNode;
+                tail = newNode;
             } else {
-                tail->next = newNode; // Link the new node to the end of the list
-                newNode->prev = tail; // Link back to the last node
-                tail = newNode; // Update tail
+                tail->next = newNode;
+                newNode->prev = tail;
+                tail = newNode;
             }
-            text++; // Move to the next character
+            text++;
         }
     }
 
     // Delete the last character
     void DeleteText() {
-        if (tail == NULL) { // If the list is empty
+        if (tail == NULL) {
             cout << "Nothing to delete!" << endl;
             return;
         }
-        Node* toDelete = tail; // Node to be deleted
-        tail = tail->prev; // Move tail back
+        Node* toDelete = tail;
+        tail = tail->prev;
         if (tail != NULL) {
-            tail->next = NULL; // Set the next of new tail to NULL
+            tail->next = NULL;
         } else {
-            head = NULL; // If the list is empty now
+            head = NULL;
         }
-        delete toDelete; // Free memory
+        delete toDelete;
     }
 
     // Display the text
     void DisplayText() {
-        Node* temp = head; // Start from head
+        Node* temp = head;
         if (temp == NULL) {
             cout << "No text to display." << endl;
             return;
         }
-        while (temp != NULL) { // Traverse the list
-            cout << temp->data; // Print the character
-            temp = temp->next; // Move to the next node
+        while (temp != NULL) {
+            cout << temp->data;
+            temp = temp->next;
         }
-        cout << endl; // Print a new line
+        cout << endl;
     }
 
     // Search for a character
     void SearchText(char c) {
-        Node* temp = head; // Start from head
+        Node* temp = head; // Start from the head
         int pos = 1; // Position counter
-        while (temp != NULL) { // Traverse the list
-            if (temp->data == c) {
+        while (temp != NULL) {
+            if (temp->data == c) { // Check if the current node's data matches the character
                 cout << "Character '" << c << "' found at position " << pos << endl;
-                return; // Exit if found
+                return;
             }
             temp = temp->next; // Move to the next node
             pos++; // Increment position
         }
-        cout << "Character '" << c << "' not found!" << endl; // If not found
+        cout << "Character '" << c << "' not found!" << endl;
     }
 
     // Print text in reverse
     void PrintReverse() {
-        Node* temp = tail; // Start from tail
+        Node* temp = tail;
         if (temp == NULL) {
             cout << "No text to print in reverse." << endl;
             return;
         }
-        while (temp != NULL) { // Traverse the list backwards
-            cout << temp->data; // Print the character
-            temp = temp->prev; // Move to the previous node
+        while (temp != NULL) {
+            cout << temp->data;
+            temp = temp->prev;
         }
-        cout << endl; // Print a new line
+        cout << endl;
     }
 };
 
 int main() {
-    TextEditor editor; // Create a TextEditor object
+    TextEditor editor;
     int choice;
     char agree = 'Y';
 
@@ -119,37 +119,37 @@ int main() {
 
         switch (choice) {
             case 1: {
-                char text[100]; // Array to hold text
+                char text[100];
                 cout << "Enter text to insert: ";
-                cin >> text; // Read user input
-                editor.InsertText(text); // Insert text
+                cin >> text;
+                editor.InsertText(text);
                 break;
             }
             case 2:
-                editor.DeleteText(); // Delete last character
+                editor.DeleteText();
                 break;
             case 3:
-                editor.DisplayText(); // Display text
+                editor.DisplayText();
                 break;
             case 4: {
                 char c;
                 cout << "Enter character to search: ";
-                cin >> c; // Read character to search
-                editor.SearchText(c); // Search for character
+                cin >> c;
+                editor.SearchText(c);
                 break;
             }
             case 5:
-                editor.PrintReverse(); // Print text in reverse
+                editor.PrintReverse();
                 break;
             case 6:
                 cout << "Exiting the program." << endl;
-                return 0; // Exit the program
+                return 0;
             default:
                 cout << "Invalid choice! Please try again." << endl;
         }
 
         cout << "Do you want to continue? (Y/N): ";
-        cin >> agree; // Ask user if they want to continue
+        cin >> agree;
     }
 
     return 0;
